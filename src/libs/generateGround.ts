@@ -1,6 +1,6 @@
 import { random } from 'lodash'
 
-import { Ground } from '../types'
+import { PathGround } from '../types'
 
 let neighbours = [[1, 0], [0, 1], [-1, 0], [0, -1]]
 
@@ -169,9 +169,9 @@ function randomPath(
   return path
 }
 
-export default function generateGround(width: number, height: number): Ground {
-  let walkable: Ground = []
-  let exits: Ground = []
+export default function generateGround(width: number, height: number): PathGround {
+  let walkable: PathGround = []
+  let exits: PathGround = []
 
   for (let x = 0; x < width; x++) {
     walkable[x] = []

@@ -1,109 +1,120 @@
-import { generateGround } from './libs'
+import { generateGround, getFigure, getNextAngleForFigure } from './libs'
+import { Figure, Ground } from './types'
 
-const ground = generateGround(10, 10)
+let clickedCell = [null, null]
+let nextAngleForFigure = null
 
-// console.table(ground)
-const cellSize = 40
+const NUMBER_OF_CELL_ON_GROUND = 10
+const CELL_SIZE = 40
 
-// function drawRotated(image, ctx) { ctx.save()
+const groundWidth = NUMBER_OF_CELL_ON_GROUND * CELL_SIZE + 1
+const groundHeight = NUMBER_OF_CELL_ON_GROUND * CELL_SIZE + 1
 
-//   ctx.translate(40, 100)
-//   ctx.rotate(Math.PI / 4)
+// Генерируем площадку с путем
+const pathGround = generateGround(NUMBER_OF_CELL_ON_GROUND, NUMBER_OF_CELL_ON_GROUND)
+// Заполняем площадку фигурами
+const ground: Ground = pathGround.map((row, y) => row.map((cell, x) => getFigure(x, y, pathGround)))
 
-//   // ctx.drawImage(image, -image.width / 2, -image.height / 2);
-//   ctx.fillStyle = 'black'
-//   ctx.font = '30px Arial'
-//   ctx.textBaseline = 'middle'
-//   ctx.textAlign = 'center'
-//   ctx.fillText('A', xI * cellSize + cellSize / 2, yI * cellSize - cellSize / 2)
+const drawFigure = (x: number, y: number, figure: Figure, ctx: CanvasRenderingContext2D) => {
+  ctx.save()
 
-//   ctx.restore()
-// }
+  const xPoint = CELL_SIZE * x + CELL_SIZE / 2
+  const yPoint = CELL_SIZE * y + CELL_SIZE / 2
 
-window.onload = () => {
-  const canvas = <HTMLCanvasElement>document.getElementById('canvas')
-  const ctx = canvas.getContext('2d')
-  canvas.width = 400
-  canvas.height = 400
+  ctx.translate(xPoint, yPoint)
+  ctx.rotate((figure.angle * Math.PI) / 180)
+  ctx.translate(-xPoint, -yPoint)
 
-  var font, lineHeight, x, y
+  ctx.fillText(figure.type, xPoint, yPoint)
+  ctx.restore()
+}
 
-  x = 100
-  y = 0
-  font = 20
-  lineHeight = 15 // this is guess and check as far as I know
-  ctx.font = font + 'px Arial'
+const getClickPosition = (canvas: HTMLCanvasElement, event: MouseEvent): [number, number] => {
+  const rect = canvas.getBoundingClientRect()
+  const x = event.clientX - rect.left
+  const y = event.clientY - rect.top
+  return [x, y]
+}
 
-  ground.forEach((row, i) => {
-    // for (let j = 0; j < 10; j++) {
-    // ctx.save()
-    // ctx.translate(x, y)
-    // ctx.rotate(-Math.PI / 4)
-    // ctx.textAlign = 'right'
-    // ctx.fillText('right', 0, lineHeight / 2)
-    // ctx.restore()
-    // ctx.fillStyle = 'red'
-    // ctx.fillRect(x, y, 2, 2)
-    // x += 50
-    // }
-  })
-
-  // return
-
+const drowBaseGround = (ctx: CanvasRenderingContext2D) => {
   ground.forEach((row, yI) => {
-    row.forEach((cell, xI) => {
+    row.forEach((figure, xI) => {
       ctx.fillStyle = 'black'
-      ctx.font = '30px Arial'
+      ctx.font = '20px Arial'
       ctx.textBaseline = 'middle'
       ctx.textAlign = 'center'
 
-      ctx.save()
+      drawFigure(xI, yI, figure, ctx)
 
-      ctx.translate(xI * cellSize, yI * cellSize)
-      ctx.rotate((180 * Math.PI) / 180)
-
-      // console.log(xI, yI)
-      // console.log(xI * cellSize, yI * cellSize + cellSize)
-      // ctx.fillRect(cellSize / 2 + 6, -4, 2, 2)
-      // ctx.fillRect(xI * 10, yI * 10 + 10 / 2, 10 - 8, 2)
-      ctx.fillText('A', cellSize / 2, cellSize / 2)
-
-      ctx.restore()
-
-      // ctx.fillStyle = 'red'
-      // ctx.fillRect(x, y, 2, 2)
-
-      // ctx.rotate(1)
-      // ctx.fillText('L', xI * cellSize + cellSize, yI * cellSize)
-      // ctx.resetTransform()
-
-      ctx.restore()
-
-      // ctx.rotate(-(10 * Math.PI) / 180)
-      ctx.fillStyle = cell ? 'white' : 'grey'
-      ctx.strokeRect(xI * cellSize, yI * cellSize, cellSize, cellSize)
-      // ctx.fillRect(xI * cellSize, yI * cellSize, cellSize, cellSize)
+      ctx.strokeStyle = '#000000'
+      ctx.lineWidth = 1
+      ctx.strokeRect(xI * CELL_SIZE + 0.5, yI * CELL_SIZE + 0.5, CELL_SIZE, CELL_SIZE)
     })
   })
+}
 
-  // ground[ground.length - 1].forEach((cell, xI) => {
-  //   ctx.fillStyle = 'black'
-  //   ctx.font = '30px Arial'
-  //   ctx.textBaseline = 'middle'
-  //   ctx.textAlign = 'center'
-  //   ctx.fillText('A', xI * cellSize + cellSize / 2, 10 * cellSize - cellSize / 2)
-  // })
+window.onload = () => {
+  const canvas = <HTMLCanvasElement>document.getElementById('canvas')
+  const animationCanvas = <HTMLCanvasElement>document.getElementById('animation-canvas')
 
-  // ctx.fillRect(10, 10, 100, 100)
-  // ctx.fill()
+  animationCanvas.addEventListener('mousedown', event => {
+    if (clickedCell[0] !== null) return
 
-  // ctx.strokeRect(15, 15, 266, 266)
-  // ctx.strokeRect(18, 18, 260, 260)
-  // ctx.fillRect(20, 20, 256, 256)
+    const [x, y] = getClickPosition(canvas, event)
+    const xCellNumber = Math.floor(x / CELL_SIZE)
+    const yCellNumber = Math.floor(y / CELL_SIZE)
 
-  // for (let i = 0; i < 8; i += 2)
-  //   for (let j = 0; j < 8; j += 2) {
-  //     ctx.clearRect(20 + i * 32, 20 + j * 32, 32, 32)
-  //     ctx.clearRect(20 + (i + 1) * 32, 20 + (j + 1) * 32, 32, 32)
-  //   }
+    clickedCell[0] = xCellNumber
+    clickedCell[1] = yCellNumber
+
+    const currentFigure = ground[yCellNumber][xCellNumber]
+    nextAngleForFigure = getNextAngleForFigure(currentFigure)
+  })
+
+  const ctx = canvas.getContext('2d')
+  const aCtx = animationCanvas.getContext('2d')
+
+  canvas.width = groundWidth
+  canvas.height = groundHeight
+  animationCanvas.width = groundWidth
+  animationCanvas.height = groundHeight
+
+  const step = () => {
+    window.requestAnimationFrame(step)
+
+    if (clickedCell[0] === null) return
+
+    const [x, y] = clickedCell
+    const currentFigure = ground[y][x]
+
+    if (nextAngleForFigure) {
+      if (currentFigure.angle < nextAngleForFigure) {
+        currentFigure.angle += 2
+      } else {
+        nextAngleForFigure = null
+        clickedCell = [null, null]
+
+        // ctx.clearRect(0, 0, animationCanvas.width, animationCanvas.height)
+        ctx.clearRect(x * CELL_SIZE + 1.5, y * CELL_SIZE + 1.5, CELL_SIZE - 2, CELL_SIZE - 2)
+        drowBaseGround(ctx)
+
+        aCtx.clearRect(0, 0, animationCanvas.width, animationCanvas.height)
+        return
+      }
+    }
+
+    aCtx.fillStyle = 'white'
+    aCtx.fillRect(x * CELL_SIZE + 1.5, y * CELL_SIZE + 1.5, CELL_SIZE - 2, CELL_SIZE - 2)
+
+    aCtx.fillStyle = 'red'
+    aCtx.font = '20px Arial'
+    aCtx.textBaseline = 'middle'
+    aCtx.textAlign = 'center'
+
+    drawFigure(x, y, currentFigure, aCtx)
+  }
+
+  window.requestAnimationFrame(step)
+
+  drowBaseGround(ctx)
 }

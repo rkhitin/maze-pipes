@@ -1,3 +1,5 @@
 import generateGround from './generateGround'
+import getFigure from './getFigure'
+import getNextAngleForFigure from './getNextAngleForFigure'
 
-export { generateGround }
+export { generateGround, getFigure, getNextAngleForFigure }
