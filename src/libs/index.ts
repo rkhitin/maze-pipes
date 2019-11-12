@@ -3,6 +3,7 @@ import { ROTATION_STEP } from '../constants'
 
 import generateGround from './generateGround'
 import getFigure from './getFigure'
+import markConnectedToEnterCell from './markConnectedToEnterCell'
 
 const getAngleStep = (currentAngle: number, targetAngle: number) => {
   return currentAngle < targetAngle - ROTATION_STEP ? ROTATION_STEP : targetAngle - currentAngle
@@ -19,4 +20,4 @@ const getClickPosition = (canvas: HTMLCanvasElement, event: MouseEvent): [number
   return [x, y]
 }
 
-export { generateGround, getFigure, getNextAngleForFigure, getClickPosition, getAngleStep }
+export { generateGround, getFigure, getNextAngleForFigure, getClickPosition, getAngleStep, markConnectedToEnterCell }

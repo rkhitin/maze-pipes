@@ -1,6 +1,11 @@
 import { Ground, Figure } from './types'
 import { CELL_SIZE } from './constants'
 
+const getFigureColor = (figure: Figure): string => {
+  if (figure.isConnectedToEnter) return 'green'
+  return figure.type === 'default' ? 'black' : 'red'
+}
+
 export const drawFigure = (x: number, y: number, figure: Figure, ctx: CanvasRenderingContext2D) => {
   ctx.save()
 
@@ -11,7 +16,7 @@ export const drawFigure = (x: number, y: number, figure: Figure, ctx: CanvasRend
   ctx.rotate((figure.angle * Math.PI) / 180)
   ctx.translate(-xPoint, -yPoint)
 
-  ctx.fillStyle = figure.type === 'default' ? 'black' : 'red'
+  ctx.fillStyle = getFigureColor(figure)
   ctx.font = '20px Arial'
   ctx.textBaseline = 'middle'
   ctx.textAlign = 'center'

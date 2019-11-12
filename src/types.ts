@@ -6,6 +6,7 @@ export type Figure = {
   shape: FigureShape
   type: FigureType
   angle: number
+  isConnectedToEnter?: boolean
 }
 
 // Игровая площадка с путем, true - путь, false - стена

@@ -1,13 +1,18 @@
-import { generateGround, getFigure, getNextAngleForFigure, getClickPosition, getAngleStep } from './libs'
+import {
+  generateGround,
+  getFigure,
+  getNextAngleForFigure,
+  getClickPosition,
+  getAngleStep,
+  markConnectedToEnterCell,
+} from './libs'
 import { NUMBER_OF_CELL_ON_GROUND, CELL_SIZE, BASE_ANGLES } from './constants'
 import { drawFigure, drawGround, drawAnimationFigureBackground } from './canvasLibs'
 import { UserClickEvent, Ground } from './types'
 
 const userClickEventsStack: UserClickEvent[] = []
-
 const groundWidth = NUMBER_OF_CELL_ON_GROUND * CELL_SIZE + 1
 const groundHeight = NUMBER_OF_CELL_ON_GROUND * CELL_SIZE + 1
-
 // Генерируем площадку с путем
 const pathGround = generateGround(NUMBER_OF_CELL_ON_GROUND, NUMBER_OF_CELL_ON_GROUND)
 // Заполняем площадку фигурами
@@ -59,6 +64,8 @@ window.onload = () => {
         continue
       }
 
+      // Конец анимации для данного эвентa
+      markConnectedToEnterCell(ground)
       userClickEventsStack.splice(i, 1)
     }
 
