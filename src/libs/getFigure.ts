@@ -1,20 +1,21 @@
 import { sample } from 'lodash'
 
-import { PathGround, Figure, FigureType } from '../types'
+import { PathGround, Figure, FigureShape } from '../types'
 import { BASE_ANGLES } from '../constants'
 
-const oppositeFigureTypes: FigureType[] = ['T', '+', '|']
-const crossFigureTypes: FigureType[] = ['T', '∟', '+']
+const oppositeFigureShapes: FigureShape[] = ['T', '+', '|']
+const crossFigureShapes: FigureShape[] = ['T', '∟', '+']
+const allFigureShapes: FigureShape[] = [...oppositeFigureShapes, ...crossFigureShapes]
 
 const getCell = (x: number, y: number, ground: PathGround) => {
   const row = ground[x]
   return row ? row[y] : null
 }
 
-const getFigureType = (x: number, y: number, ground: PathGround): FigureType => {
+const getFigureShape = (x: number, y: number, ground: PathGround): FigureShape => {
   // Если не путь - рандомный тип
   // TODO: сделать рандом
-  if (!ground[x][y]) return '.'
+  if (!ground[x][y]) return sample(allFigureShapes)
 
   // left, top, right, bottom
   const neighbours = []
@@ -27,18 +28,20 @@ const getFigureType = (x: number, y: number, ground: PathGround): FigureType => 
   if (neighbours.filter(Boolean).length === 1) return 'o'
 
   // Если путь противоположная то "T" или "I" или "+"
-  if ((neighbours[0] && neighbours[2]) || (neighbours[1] && neighbours[3])) return sample(oppositeFigureTypes)
+  if ((neighbours[0] && neighbours[2]) || (neighbours[1] && neighbours[3])) return sample(oppositeFigureShapes)
 
-  return sample(crossFigureTypes)
+  return sample(crossFigureShapes)
 }
 
 const getFigure = (x: number, y: number, ground: PathGround): Figure => {
-  const type = getFigureType(x, y, ground)
+  const shape = getFigureShape(x, y, ground)
   const angle = sample(BASE_ANGLES)
+  const type = ground[x][y] ? 'path' : 'default'
 
   return {
-    type,
+    shape,
     angle,
+    type,
   }
 }
 

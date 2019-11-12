@@ -11,12 +11,12 @@ export const drawFigure = (x: number, y: number, figure: Figure, ctx: CanvasRend
   ctx.rotate((figure.angle * Math.PI) / 180)
   ctx.translate(-xPoint, -yPoint)
 
-  ctx.fillStyle = 'black'
+  ctx.fillStyle = figure.type === 'default' ? 'black' : 'red'
   ctx.font = '20px Arial'
   ctx.textBaseline = 'middle'
   ctx.textAlign = 'center'
 
-  ctx.fillText(figure.type, xPoint, yPoint)
+  ctx.fillText(figure.shape, xPoint, yPoint)
   ctx.restore()
 }
 

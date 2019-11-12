@@ -4,7 +4,6 @@ import { drawFigure, drawGround, drawAnimationFigureBackground } from './canvasL
 import { UserClickEvent, Ground } from './types'
 
 const userClickEventsStack: UserClickEvent[] = []
-// let userClickEvent: UserClickEvent | null = null
 
 const groundWidth = NUMBER_OF_CELL_ON_GROUND * CELL_SIZE + 1
 const groundHeight = NUMBER_OF_CELL_ON_GROUND * CELL_SIZE + 1

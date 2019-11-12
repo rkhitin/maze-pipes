@@ -1,6 +1,9 @@
-export type FigureType = 'o' | 'T' | '∟' | '+' | '|' | '.'
+export type FigureShape = 'o' | 'T' | '∟' | '+' | '|' | '.'
+
+export type FigureType = 'activePath' | 'path' | 'default'
 
 export type Figure = {
+  shape: FigureShape
   type: FigureType
   angle: number
 }
