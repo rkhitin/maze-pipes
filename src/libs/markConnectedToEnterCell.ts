@@ -1,8 +1,8 @@
 import { memoize } from 'lodash'
 
-import { Ground, Figure } from '../types'
+import { Ground, Figure, Neighbour, NeighbourPosition } from '../types'
 
-import getNeighbours from './getNeighbours'
+import { getNeighbouringFigures } from './groundHelpers'
 
 const getEnterPosition = memoize((ground: Ground) =>
   ground.reduce<[number, number]>(
@@ -14,78 +14,78 @@ const getEnterPosition = memoize((ground: Ground) =>
   )
 )
 
-const checkIsCellConnected = (figure: Figure) => {}
-
 const getQuarter = (angle: number): number => Math.floor((angle / 90) % 4)
+
+const horizontalNeighborhood: NeighbourPosition[] = ['left', 'right']
+
+const checkIsFigureConnectedWithX = ({ figure, position }: Neighbour) => {
+  if (figure.shape === '+') return true
+
+  const figureQuarter = getQuarter(figure.angle)
+  const isFigureOnHorizontalLine = horizontalNeighborhood.includes(position)
+
+  console.log(figure, figureQuarter)
+
+  if (figure.shape === '|') {
+    return isFigureOnHorizontalLine
+      ? // for left and right
+        [3, 1].includes(figureQuarter)
+      : // for top and botton
+        [2, 0].includes(figureQuarter)
+  }
+
+  // if (figure.shape === 'T') {
+  //   return isFigureOnHorizontalLine
+  //     ? // for left and right
+  //       [2, 0].includes(figureQuarter)
+  //     : // for top and botton
+  //       [3, 1].includes(figureQuarter)
+  // }
+}
+
+const checkIsNeighbourConnected = (currentFigure: Figure, neighbour: Neighbour): boolean => {
+  // const currentFigureQuarter = getQuarter(currentFigure.angle)
+  // const targetFigureQuarter = getQuarter(neighbour.figure.angle)
+
+  switch (currentFigure.shape) {
+    case '+':
+      return false
+
+    case '|':
+      return false
+
+    case 'T':
+      return false
+
+    case 'o':
+      return checkIsFigureConnectedWithX(neighbour)
+    // return true
+
+    case 'L':
+      return false
+
+    default:
+      return false
+  }
+}
+const markConnected = (x: number, y: number, ground: Ground) => {
+  const neighbours = getNeighbouringFigures(x, y, ground)
+
+  neighbours.forEach(neighbour => {
+    if (!neighbour || !neighbour.figure || neighbour.figure.type === 'activePath') return
+
+    const isFigureConnected = checkIsNeighbourConnected(ground[x][y], neighbour)
+
+    if (!isFigureConnected) return
+
+    neighbour.figure.type = 'activePath'
+    markConnected(neighbour.x, neighbour.y, ground)
+  })
+}
 
 const markConnectedToEnterCell = (ground: Ground) => {
   const [x, y] = getEnterPosition(ground)
-
-  //   const positions = []
-  //   positions[0] = [x, y - 1]
-  //   positions[1] = [x - 1, y]
-  //   positions[2] = [x, y + 1]
-  //   positions[3] = [x + 1, y]
-
-  // left, top, right, bottom
-  const neighbours = getNeighbours(x, y, ground)
-  //   neighbours[0] = ground[x][y - 1]
-
-  for (let i = 0; i < 4; i++) {
-    if (!neighbours[i]) continue
-
-    const quarter = getQuarter(neighbours[i].angle)
-
-    if (neighbours[i].shape === '+') {
-      neighbours[i].isConnectedToEnter = true
-    }
-
-    if (neighbours[i].shape === '|') {
-      neighbours[i].isConnectedToEnter =
-        i === 0 || i === 2
-          ? // for left and right
-            quarter === 3 || quarter === 1
-          : // for top and botton
-            quarter === 2 || quarter === 0
-    }
-
-    if (neighbours[i].shape === '∟') {
-      console.log(i, quarter)
-
-      neighbours[i].isConnectedToEnter = (() => {
-        switch (i) {
-          case 0:
-            return false
-          case 1:
-            return quarter === 1 || quarter === 2
-          case 2:
-            return quarter === 3 || quarter === 2
-          case 3:
-            return quarter === 3 || quarter === 0
-          default:
-            return false
-        }
-      })()
-    }
-  }
-
-  //   const quarter1 = getQuarter(neighbours[0].angle)
-  //   if (neighbours[0] && neighbours[0].shape === 'T' && (quarter1 === 1 || quarter1 === 3)) {
-  //     neighbours[0].isConnectedToEnter = true
-  //   }
-
-  //   const quarter2 = getQuarter(neighbours[0].angle)
-  //   if (neighbours[1] && neighbours[1].shape === 'T' && (quarter2 === 1 || quarter2 === 3)) {
-  //     neighbours[1].isConnectedToEnter = true
-  //   }
-
-  //   const neighbours = getNeighbours(x, y, ground)
-
-  //   neighbours.forEach(neighbour => {
-  //     if (neighbour && neighbour.shape === 'T') {
-  //       neighbour.isConnectedToEnter = true
-  //     }
-  //   })
+  markConnected(x, y, ground)
 }
 
 export default markConnectedToEnterCell

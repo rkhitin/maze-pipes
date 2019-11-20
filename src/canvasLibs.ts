@@ -2,7 +2,8 @@ import { Ground, Figure } from './types'
 import { CELL_SIZE } from './constants'
 
 const getFigureColor = (figure: Figure): string => {
-  if (figure.isConnectedToEnter) return 'green'
+  if (figure.type === 'activePath') return 'green'
+
   return figure.type === 'default' ? 'black' : 'red'
 }
 

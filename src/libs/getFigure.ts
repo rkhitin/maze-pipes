@@ -3,18 +3,17 @@ import { sample } from 'lodash'
 import { PathGround, Figure, FigureShape } from '../types'
 import { BASE_ANGLES } from '../constants'
 
-import getNeighbours from './getNeighbours'
+import { getNeighboursForPathGround } from './groundHelpers'
 
 const oppositeFigureShapes: FigureShape[] = ['T', '+', '|']
-const crossFigureShapes: FigureShape[] = ['T', '∟', '+']
+const crossFigureShapes: FigureShape[] = ['T', 'L', '+']
 const allFigureShapes: FigureShape[] = [...oppositeFigureShapes, ...crossFigureShapes]
 
 const getFigureShape = (x: number, y: number, ground: PathGround): FigureShape => {
   // Если не путь - рандомный тип
-  // TODO: сделать рандом
   if (!ground[x][y]) return sample(allFigureShapes)
 
-  const neighbours = getNeighbours(x, y, ground)
+  const neighbours = getNeighboursForPathGround(x, y, ground)
 
   // Если путь только одна соседняя клетка - это вход, тип "O"
   if (neighbours.filter(Boolean).length === 1) return 'o'

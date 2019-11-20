@@ -1,7 +1,7 @@
 import { Figure } from '../types'
 import { ROTATION_STEP } from '../constants'
 
-import generateGround from './generateGround'
+import generatePathGround from './generatePathGround'
 import getFigure from './getFigure'
 import markConnectedToEnterCell from './markConnectedToEnterCell'
 
@@ -20,4 +20,11 @@ const getClickPosition = (canvas: HTMLCanvasElement, event: MouseEvent): [number
   return [x, y]
 }
 
-export { generateGround, getFigure, getNextAngleForFigure, getClickPosition, getAngleStep, markConnectedToEnterCell }
+export {
+  generatePathGround,
+  getFigure,
+  getNextAngleForFigure,
+  getClickPosition,
+  getAngleStep,
+  markConnectedToEnterCell,
+}

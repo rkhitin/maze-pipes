@@ -1,5 +1,5 @@
 import {
-  generateGround,
+  generatePathGround,
   getFigure,
   getNextAngleForFigure,
   getClickPosition,
@@ -13,8 +13,9 @@ import { UserClickEvent, Ground } from './types'
 const userClickEventsStack: UserClickEvent[] = []
 const groundWidth = NUMBER_OF_CELL_ON_GROUND * CELL_SIZE + 1
 const groundHeight = NUMBER_OF_CELL_ON_GROUND * CELL_SIZE + 1
+
 // Генерируем площадку с путем
-const pathGround = generateGround(NUMBER_OF_CELL_ON_GROUND, NUMBER_OF_CELL_ON_GROUND)
+const pathGround = generatePathGround(NUMBER_OF_CELL_ON_GROUND, NUMBER_OF_CELL_ON_GROUND)
 // Заполняем площадку фигурами
 const ground: Ground = pathGround.map((row, y) => row.map((cell, x) => getFigure(x, y, pathGround)))
 
